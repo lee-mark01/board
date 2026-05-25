@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { fetchPosts } from '../api/posts'
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const PAGE_SIZE = 10
 
@@ -46,125 +47,78 @@ export default function PostList() {
 
   return (
     <div>
-      <div className="list-toolbar">
-        <form onSubmit={handleSearch} className="search-form">
-          <input
-            type="text"
-            placeholder="제목 검색..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button type="submit">검색</button>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">게시판</h1>
+        <form onSubmit={handleSearch} className="flex gap-2">
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="제목 검색..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-300 transition-all w-60"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+          >
+            검색
+          </button>
         </form>
-        <Link to="/write">
-          <button className="primary">+ 새 글</button>
-        </Link>
       </div>
 
-      {loading && <p className="status-msg">로딩 중...</p>}
-      {error && <p className="status-msg error">{error}</p>}
+      {loading && <p className="text-center py-16 text-gray-400">로딩 중...</p>}
+      {error && <p className="text-center py-16 text-red-500">{error}</p>}
 
       {!loading && !error && (
         <>
           {posts.length === 0 ? (
-            <p className="status-msg">게시글이 없습니다.</p>
+            <p className="text-center py-16 text-gray-400">게시글이 없습니다.</p>
           ) : (
-            <table className="post-table">
-              <thead>
-                <tr>
-                  <th className="col-title">제목</th>
-                  <th className="col-author">작성자</th>
-                  <th className="col-date">날짜</th>
-                </tr>
-              </thead>
-              <tbody>
-                {posts.map((post) => (
-                  <tr key={post.id}>
-                    <td className="col-title">
-                      <Link to={`/posts/${post.id}`}>{post.title}</Link>
-                    </td>
-                    <td className="col-author">{post.userName}</td>
-                    <td className="col-date">{formatDate(post.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              {posts.map((post, i) => (
+                <Link
+                  key={post.id}
+                  to={`/posts/${post.id}`}
+                  className={`flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors ${
+                    i !== posts.length - 1 ? 'border-b border-gray-100' : ''
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <p className="text-[15px] text-gray-900 truncate">{post.title}</p>
+                    <p className="text-sm text-gray-400 mt-0.5">{post.userName}</p>
+                  </div>
+                  <span className="text-sm text-gray-400 shrink-0 ml-4">
+                    {formatDate(post.createdAt)}
+                  </span>
+                </Link>
+              ))}
+            </div>
           )}
 
-          <div className="pagination">
-            <button disabled={page === 0} onClick={() => goPage(page - 1)}>
-              &lt; 이전
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <button
+              disabled={page === 0}
+              onClick={() => goPage(page - 1)}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer disabled:cursor-default"
+            >
+              <ChevronLeft size={16} />
+              이전
             </button>
-            <span className="page-info">page {page + 1}</span>
+            <span className="text-sm text-gray-400">{page + 1} 페이지</span>
             <button
               disabled={posts.length < PAGE_SIZE}
               onClick={() => goPage(page + 1)}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer disabled:cursor-default"
             >
-              다음 &gt;
+              다음
+              <ChevronRight size={16} />
             </button>
           </div>
         </>
       )}
-
-      <style>{`
-        .list-toolbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 20px;
-        }
-        .search-form {
-          display: flex;
-          gap: 8px;
-          flex: 1;
-          max-width: 400px;
-        }
-        .search-form input {
-          flex: 1;
-        }
-        .post-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .post-table th,
-        .post-table td {
-          padding: 10px 12px;
-          text-align: left;
-          border-bottom: 1px solid var(--border);
-        }
-        .post-table th {
-          color: var(--text-muted);
-          font-weight: 400;
-          font-size: 12px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        .post-table tbody tr:hover {
-          background: var(--surface);
-        }
-        .col-author { width: 120px; }
-        .col-date { width: 110px; color: var(--text-muted); font-size: 13px; }
-        .pagination {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 16px;
-          margin-top: 24px;
-        }
-        .page-info {
-          color: var(--text-muted);
-          font-size: 13px;
-        }
-        .status-msg {
-          text-align: center;
-          padding: 40px;
-          color: var(--text-muted);
-        }
-        .status-msg.error {
-          color: var(--danger);
-        }
-      `}</style>
     </div>
   )
 }
