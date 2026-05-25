@@ -83,13 +83,15 @@ localhost 하드코딩 제거, 모든 환경 의존 값을 환경변수로 분�
 - [x] `.gitignore` - `.env`, `.idea/` 추가
 - [x] `application.properties.example` 최신화
 
-### Phase 1 - Docker화
+### Phase 1 - Docker화 (완료)
 
 Spring Boot와 Redis를 컨테이너로 구성.
 
-- [ ] `board/Dockerfile` - Multi-stage build (Gradle build → JRE 21 실행)
-- [ ] `docker-compose.yml` - spring-boot + redis + nginx 구성
-- [ ] `nginx/default.conf` - 리버스 프록시 설정 (/ → :8080)
+- [x] `board/Dockerfile` - Multi-stage build (Gradle build → JRE 21 실행)
+- [x] `docker-compose.yml` - spring-boot + redis + nginx 구성
+- [x] `nginx/default.conf` - 리버스 프록시 설정 (/ → :8080)
+- [x] `.env.example` - 환경변수 템플릿
+- [x] `board/.dockerignore` - 빌드 컨텍스트 최적화
 - [ ] 로컬에서 `docker compose up` 동작 확인
 
 ### Phase 2 - AWS 인프라 구축
