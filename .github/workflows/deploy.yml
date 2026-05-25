@@ -6,7 +6,9 @@ on:
     paths:
       - 'board/**'
       - 'docker-compose.yml'
+      - 'docker-compose.prod.yml'
       - 'nginx/**'
+      - '.github/workflows/**'
 
 jobs:
   deploy:
