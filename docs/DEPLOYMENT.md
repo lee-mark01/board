@@ -94,17 +94,15 @@ Spring Boot와 Redis를 컨테이너로 구성.
 - [x] `board/.dockerignore` - 빌드 컨텍스트 최적화
 - [ ] 로컬에서 `docker compose up` 동작 확인
 
-### Phase 2 - AWS 인프라 구축
+### Phase 2 - AWS 인프라 구축 (완료)
 
-- [ ] EC2 인스턴스 생성 (Amazon Linux 2023, t2.micro)
-  - Docker, Docker Compose 설치
-- [ ] RDS PostgreSQL 생성 (db.t3.micro, 프리티어)
-  - EC2에서만 접근 가능하도록 Security Group 설정
-- [ ] ECR 리포지토리 생성
-- [ ] Security Group 설정
-  - EC2: 22(SSH), 80(HTTP), 443(HTTPS)
-  - RDS: 5432 (EC2 SG에서만 허용)
-- [ ] IAM 사용자 생성 (GitHub Actions용, ECR 접근 권한)
+- [x] Security Group 생성 (board-ec2-sg, board-rds-sg)
+- [x] RDS PostgreSQL 생성 (db.t3.micro)
+- [x] EC2 인스턴스 생성 (Amazon Linux 2023, t3.micro)
+- [x] Elastic IP 할당 → EC2 연결 (54.116.10.233)
+- [x] EC2에 Docker, Docker Compose 설치
+- [x] ECR 리포지토리 생성 (`board-app`)
+- [x] IAM 사용자 생성 (github-actions-deployer)
 
 ### Phase 3 - 도메인 + HTTPS
 
